@@ -8,7 +8,7 @@ library(googleway)
 
 source("R/home_ui.R")
 source("R/about_ui.R")
-source("R/modal_ui.R")
+source("R/report_ui.R")
 
 data <- data.frame(
   Location = c("Walgreens", "Big Y", "Costco"), 
@@ -29,7 +29,7 @@ nav_items <- function() {
     bslib::nav("Home", home_ui), 
     bslib::nav_menu(
       title = "Submit Report", 
-      bslib::nav("Tests in Stock", in_ui), 
+      bslib::nav("Tests In Stock", in_ui), 
       bslib::nav("Tests Out of Stock", out_ui), 
     ), 
     bslib::nav("About", about_ui), 

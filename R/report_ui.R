@@ -93,7 +93,7 @@ out_ui <- shiny::tagList(
   shiny::fluidRow(
     
     shiny::column(
-      width = 6, 
+      width = 3, 
       
       shiny::dateInput(
         inputId = "select_date_out", 
@@ -106,7 +106,7 @@ out_ui <- shiny::tagList(
     ), 
     
     shiny::column(
-      width = 6, 
+      width = 3, 
       
       shiny::selectizeInput(
         inputId = "select_time_of_day_out", 
@@ -138,78 +138,3 @@ out_ui <- shiny::tagList(
   )
   
 )
-
-
-# modal_ui <- function(type) {
-#   
-#   if (type == "in") {
-#     
-#     modal <- shiny::modalDialog(
-#       title = "Please Tell Us Where/When You Saw Tests In Stock", 
-#       
-#       modal_pickers_in, 
-#       
-#       googleway::google_mapOutput(outputId = "map"), 
-#       
-#       shiny::br(), 
-#       
-#       "Please ensure that the address selected is the same as what you intended.", 
-#       
-#       footer = shiny::tagList(
-#         shiny::div(
-#           # Button to dismiss the modal
-#           shiny::modalButton(
-#             label = "Back"
-#           ), 
-#           shiny::actionButton(
-#             inputId = "submit_in_btn", 
-#             label = "Submit"
-#           )
-#         )
-#       ), 
-#       
-#       size = "l", 
-#       
-#       easyClose = FALSE
-#       
-#     )
-#     
-#   }
-#   
-#   if (type == "out") {
-#     
-#     modal <- shiny::modalDialog(
-#       title = "Please Tell Us Where/When You Saw Tests Out of Stock", 
-#       
-#       modal_pickers_out, 
-#       
-#       googleway::google_mapOutput(outputId = "map"), 
-#       
-#       shiny::br(), 
-#       
-#       "Please ensure that the address selected is the same as what you intended.", 
-#       
-#       footer = shiny::tagList(
-#         shiny::div(
-#           # Button to dismiss the modal
-#           shiny::modalButton(
-#             label = "Back"
-#           ), 
-#           shiny::actionButton(
-#             inputId = "submit_out_btn", 
-#             label = "Submit"
-#           )
-#         )
-#       ), 
-#       
-#       size = "l", 
-#       
-#       easyClose = FALSE
-#       
-#     )
-#     
-#   }
-#   
-#   return(modal)
-#   
-# }
