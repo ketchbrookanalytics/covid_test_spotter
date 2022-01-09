@@ -89,6 +89,7 @@ server <- function(input, output, session) {
       filterable = TRUE, 
       showSortable = TRUE,
       defaultSorted = list(Time = "desc"), 
+      language = reactable::reactableLang(filterPlaceholder = "Search..."), 
       columns = list(
         Location = reactable::colDef(filterable = FALSE), 
         Time = reactable::colDef(filterable = FALSE)
@@ -96,19 +97,41 @@ server <- function(input, output, session) {
     )
   })
   
-  output$map <- googleway::renderGoogle_map({
+  output$map_in <- googleway::renderGoogle_map({
     googleway::google_map(
       key = key,
       search_box = TRUE,
-      event_return_type = "list"
+      event_return_type = "list", 
+      location = c(41.763710, -72.685097), 
+      map_type_control = FALSE, 
+      street_view_control = FALSE
     )
   })
   
-  output$selected_address <- shiny::renderText({
+  output$selected_address_in <- shiny::renderText({
     
-    shiny::req(input$map_place_search$address)
+    shiny::req(input$map_in_place_search$address)
     
-    input$map_place_search$address
+    paste0("Address Selected: ", input$map_in_place_search$address)
+    
+  })
+  
+  output$map_out <- googleway::renderGoogle_map({
+    googleway::google_map(
+      key = key,
+      search_box = TRUE,
+      event_return_type = "list", 
+      location = c(41.763710, -72.685097), 
+      map_type_control = FALSE, 
+      street_view_control = FALSE
+    )
+  })
+  
+  output$selected_address_out <- shiny::renderText({
+    
+    shiny::req(input$map_out_place_search$address)
+    
+    paste0("Address Selected: ", input$map_out_place_search$address)
     
   })
   
@@ -129,6 +152,166 @@ server <- function(input, output, session) {
     )
 
   })
+  
+  shiny::observeEvent(input$submit_in_draft_btn, {
+    
+    check <- any(
+      nchar(trimws(input$select_brand_in)) == 0, 
+      nchar(trimws(input$select_inventory_in)) == 0, 
+      nchar(trimws(input$select_date_in)) == 0, 
+      nchar(trimws(input$select_time_in)) == 0, 
+      length(input$map_in_place_search) == 0, 
+      !grepl(input$map_in_place_search$address, "CT")
+    )
+    
+    if (any(check)) {
+      
+      modal <- shiny::modalDialog(
+        title = "Oops!", 
+        "It looks like you forgot something...", 
+        "Please ensure you chose an option from each drop down menu, and selected a location in Connecticut from the map.", 
+        footer = shiny::modalButton(
+          label = "Go Back"
+        )
+      )
+      
+    } else {
+      
+      modal <- shiny::modalDialog(
+        title = "Please Review the Information Provided", 
+        
+        shiny::tagList(
+          shiny::p(
+            "By clicking \"Submit\", you verify that the following information about the COVID-19 at-home tests you saw in stock is correct to the best of your knowledge:"
+          ), 
+          shiny::br(), 
+          shiny::p(
+            paste0("Brand: ", input$select_brand_in)
+          ), 
+          shiny::p(
+            paste0("Inventory (Amount): ", input$select_inventory_in)
+          ), 
+          shiny::p(
+            paste0("Date: ", format(as.Date(input$select_date_in), "%A, %B %d, %Y"))
+          ), 
+          shiny::p(
+            paste0("Time of Day: ", input$select_time_in)
+          ), 
+          shiny::p(
+            paste0("Location Name: ", input$map_in_place_search$name)
+          ), 
+          shiny::p(
+            paste0("Address: ", input$map_in_place_search$address)
+          )
+        ),
+        
+        footer = shiny::tagList(
+          shiny::div(
+            # Button to dismiss the modal
+            shiny::modalButton(
+              label = "Go Back"
+            ), 
+            # Button to move to the next question
+            shiny::actionButton(
+              inputId = "submit_in_final_btn", 
+              label = "Submit", 
+              icon = shiny::icon("check")
+            )
+          )
+        )
+      )
+      
+    }
+    
+    shiny::showModal(modal)
+    
+  })
+  
+  
+  shiny::observeEvent(input$submit_out_draft_btn, {
+    
+    check <- any(
+      nchar(trimws(input$select_date_out)) == 0, 
+      nchar(trimws(input$select_time_out)) == 0, 
+      length(input$map_in_place_search) == 0, 
+      !grepl(input$map_in_place_search$address, "CT")
+    )
+    
+    if (any(check)) {
+      
+      modal <- shiny::modalDialog(
+        title = "Oops!", 
+        "It looks like you forgot something...", 
+        "Please ensure you chose an option from each drop down menu, and selected a location in Connecticut from the map.", 
+        footer = shiny::modalButton(
+          label = "Go Back"
+        )
+      )
+      
+    } else {
+      
+      modal <- shiny::modalDialog(
+        title = "Please Review the Information Provided", 
+        
+        shiny::tagList(
+          shiny::p(
+            "By clicking \"Submit\", you verify that the following information about the COVID-19 at-home tests you found to be out of stock is correct to the best of your knowledge:"
+          ), 
+          shiny::br(), 
+          shiny::p(
+            paste0("Date: ", format(as.Date(input$select_date_out), "%A, %B %d, %Y"))
+          ), 
+          shiny::p(
+            paste0("Time of Day: ", input$select_time_out)
+          ), 
+          shiny::p(
+            paste0("Location Name: ", input$map_out_place_search$name)
+          ), 
+          shiny::p(
+            paste0("Address: ", input$map_out_place_search$address)
+          )
+        ),
+        
+        footer = shiny::tagList(
+          shiny::div(
+            # Button to dismiss the modal
+            shiny::modalButton(
+              label = "Go Back"
+            ), 
+            # Button to move to the next question
+            shiny::actionButton(
+              inputId = "submit_out_final_btn", 
+              label = "Submit", 
+              icon = shiny::icon("check")
+            )
+          )
+        )
+      )
+      
+    }
+    
+    shiny::showModal(modal)
+    
+  })
+  
+  
+  shiny::observeEvent(input$submit_in_final_btn, {
+    
+    data <- tibble::tibble(
+      location_id = input$map_in_place_search$, 
+      name = input$map_in_place_search$name, 
+      address = input$map_in_place_search$address, 
+      lat = input$map_in_place_search$lat, 
+      lon = input$map_in_place_search$lon, 
+      brand = input$select_brand_in, 
+      inventory = input$select_inventory_in, 
+      date = input$select_date_in, 
+      time = input$select_time_in, 
+      timestamp = Sys.time() |> as.character()
+    )
+    
+  })
+  
   
   
 }

@@ -20,7 +20,7 @@ in_ui <- shiny::tagList(
         width = 3, 
         
         shiny::selectizeInput(
-          inputId = "select_type_in", 
+          inputId = "select_brand_in", 
           label = "Brand", 
           choices = c("BinaxNOW", "QuickVue", "Flowflex", "Other", "Not Sure"), 
           options = list(
@@ -50,7 +50,7 @@ in_ui <- shiny::tagList(
         
         shiny::dateInput(
           inputId = "select_date_in", 
-          label = "Date Spotted", 
+          label = "Date", 
           min = Sys.Date() %m-% lubridate::days(5), 
           max = Sys.Date() %m+% lubridate::days(1), 
           format = "mm/dd/yyyy"
@@ -59,8 +59,8 @@ in_ui <- shiny::tagList(
         shiny::br(), 
         
         shiny::selectizeInput(
-          inputId = "select_time_of_day_in", 
-          label = "Time of Day Spotted", 
+          inputId = "select_time_in", 
+          label = "Time of Day", 
           choices = c("Morning", "Afternoon", "Evening"), 
           options = list(
             placeholder = "Choose One...", 
@@ -84,11 +84,11 @@ in_ui <- shiny::tagList(
           )
         ), 
         
-        googleway::google_mapOutput(outputId = "map"), 
+        googleway::google_mapOutput(outputId = "map_in"), 
         
         shiny::br(), 
         
-        shiny::textOutput(outputId = "selected_address")
+        shiny::textOutput(outputId = "selected_address_in")
         
       )
       
@@ -97,6 +97,8 @@ in_ui <- shiny::tagList(
     shiny::fluidRow(
       shiny::column(
         width = 12, 
+        
+        shiny::hr(), 
         
         shiny::actionButton(
           class = "btn btn-info", 
@@ -142,7 +144,7 @@ out_ui <- shiny::tagList(
         shiny::br(), 
         
         shiny::selectizeInput(
-          inputId = "select_time_of_day_out", 
+          inputId = "select_time_out", 
           label = "Time of Day", 
           choices = c("Morning", "Afternoon", "Evening"), 
           options = list(
@@ -156,9 +158,22 @@ out_ui <- shiny::tagList(
       shiny::column(
         width = 9, 
         
-        shiny::p("Map goes here")
+        shiny::div(
+          shiny::div(
+            style = "float: left; vertical-align: bottom;", 
+            shiny::icon("map-marker-alt")
+          ), 
+          shiny::h5(
+            style = "color: black; display: inline-block;", 
+            "Find the Location using the Search Box below:"
+          )
+        ), 
         
-        # googleway::google_mapOutput(outputId = "map")
+        googleway::google_mapOutput(outputId = "map_out"), 
+        
+        shiny::br(), 
+        
+        shiny::textOutput(outputId = "selected_address_out")
         
       )
       
