@@ -26,11 +26,11 @@ data <- data.frame(
 nav_items <- function() {
   
   list(
-    bslib::nav("Home", home_ui), 
+    bslib::nav(title = "Home", home_ui), 
     bslib::nav_menu(
       title = "Submit Report", 
-      bslib::nav("Tests In Stock", in_ui), 
-      bslib::nav("Tests Out of Stock", out_ui), 
+      bslib::nav(title = "Tests In Stock", in_ui, value = "nav_report_in"), 
+      bslib::nav(title = "Tests Out of Stock", out_ui, value = "nav_report_out"), 
     ), 
     bslib::nav("About", about_ui), 
     bslib::nav_spacer(),
@@ -49,6 +49,7 @@ nav_items <- function() {
 
 
 ui <- bslib::page_navbar(
+  id = "nav_bar_id", 
   title = "CT COVID-19 At-Home Test Spotter", 
   theme = bslib::bs_theme(
     bootswatch = "cerulean", 
@@ -103,19 +104,23 @@ server <- function(input, output, session) {
   #   )
   # })
   
-  # shiny::observeEvent(input$report_in_btn, {
-  # 
-  #   modal_ui(type = "in") |>
-  #     shiny::showModal()
-  # 
-  # })
-  # 
-  # shiny::observeEvent(input$report_out_btn, {
-  # 
-  #   modal_ui(type = "out") |>
-  #     shiny::showModal()
-  # 
-  # })
+  shiny::observeEvent(input$report_in_btn, {
+
+    bslib::nav_select(
+      id = "nav_bar_id", 
+      selected = "nav_report_in"
+    )
+
+  })
+
+  shiny::observeEvent(input$report_out_btn, {
+
+    bslib::nav_select(
+      id = "nav_bar_id", 
+      selected = "nav_report_out"
+    )
+
+  })
   
   
 }
