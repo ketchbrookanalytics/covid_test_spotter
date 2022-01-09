@@ -96,13 +96,21 @@ server <- function(input, output, session) {
     )
   })
   
-  # output$map <- googleway::renderGoogle_map({
-  #   googleway::google_map(
-  #     key = key, 
-  #     search_box = TRUE, 
-  #     event_return_type = "list"
-  #   )
-  # })
+  output$map <- googleway::renderGoogle_map({
+    googleway::google_map(
+      key = key,
+      search_box = TRUE,
+      event_return_type = "list"
+    )
+  })
+  
+  output$selected_address <- shiny::renderText({
+    
+    shiny::req(input$map_place_search$address)
+    
+    input$map_place_search$address
+    
+  })
   
   shiny::observeEvent(input$report_in_btn, {
 
