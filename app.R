@@ -298,7 +298,7 @@ server <- function(input, output, session) {
   shiny::observeEvent(input$submit_in_final_btn, {
     
     data <- tibble::tibble(
-      location_id = input$map_in_place_search$, 
+      place_id = input$map_in_place_search$place_id, 
       name = input$map_in_place_search$name, 
       address = input$map_in_place_search$address, 
       lat = input$map_in_place_search$lat, 
