@@ -22,7 +22,7 @@ in_ui <- shiny::tagList(
         shiny::selectizeInput(
           inputId = "select_brand_in", 
           label = "Brand", 
-          choices = c("BinaxNOW", "QuickVue", "Flowflex", "Other", "Not Sure"), 
+          choices = c("BinaxNOW", "QuickVue", "Flowflex", "Multiple", "Other", "Not Sure"), 
           options = list(
             placeholder = "Choose One...", 
             onInitialize = I('function() { this.setValue(""); }')
@@ -51,8 +51,8 @@ in_ui <- shiny::tagList(
         shiny::dateInput(
           inputId = "select_date_in", 
           label = "Date", 
-          min = Sys.Date() %m-% lubridate::days(5), 
-          max = Sys.Date() %m+% lubridate::days(1), 
+          min = Sys.Date() - lubridate::days(5), 
+          max = Sys.Date() + lubridate::days(1), 
           format = "mm/dd/yyyy"
         ),
         
@@ -136,8 +136,8 @@ out_ui <- shiny::tagList(
         shiny::dateInput(
           inputId = "select_date_out", 
           label = "Date", 
-          min = Sys.Date() %m-% lubridate::days(5), 
-          max = Sys.Date() %m+% lubridate::days(1), 
+          min = Sys.Date() - lubridate::days(5), 
+          max = Sys.Date() + lubridate::days(1), 
           format = "mm/dd/yyyy"
         ),
         

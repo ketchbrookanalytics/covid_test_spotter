@@ -1,26 +1,11 @@
 
 
-library(shiny)
-library(bslib)
-library(reactable)
-library(lubridate)
-library(googleway)
 
+source("global.R")
 source("R/home_ui.R")
 source("R/about_ui.R")
 source("R/report_ui.R")
-
-data <- data.frame(
-  Location = c("Walgreens", "Big Y", "Costco"), 
-  Town = c("Ellington", "Rockville", "Enfield"), 
-  Inventory = c("High", "Low", "Not Sure"), 
-  Type = c("BinaxNOW", "QuickVue", "Flowflex"), 
-  Time = c(
-    Sys.time() %m-% lubridate::days(1), 
-    Sys.time(), 
-    Sys.time() %m+% lubridate::days(1)
-  )
-)
+source("R/db_connect.R")
 
 
 nav_items <- function() {
@@ -52,7 +37,7 @@ ui <- bslib::page_navbar(
   id = "nav_bar_id", 
   title = "CT COVID-19 At-Home Test Spotter", 
   theme = bslib::bs_theme(
-    bootswatch = "cerulean", 
+    bootswatch = "cerulean",
     fg = "#0B2B7C",  # CT blue
     bg = "#FFFFFF"   # white
   ), 
@@ -83,23 +68,35 @@ ui <- bslib::page_navbar(
 
 server <- function(input, output, session) {
   
+  data <- shiny::reactive({
+    get_data(creds = config)
+  })
+  
+  
   output$table <- reactable::renderReactable({
     reactable::reactable(
-      data, 
+      data(), 
       filterable = TRUE, 
       showSortable = TRUE,
-      defaultSorted = list(Time = "desc"), 
+      defaultSorted = list(date = "desc"), 
       language = reactable::reactableLang(filterPlaceholder = "Search..."), 
       columns = list(
-        Location = reactable::colDef(filterable = FALSE), 
-        Time = reactable::colDef(filterable = FALSE)
+        place_id = reactable::colDef(show = FALSE), 
+        name = reactable::colDef(name = "Name", filterable = FALSE), 
+        address = reactable::colDef(name = "Address", filterable = FALSE), 
+        lat = reactable::colDef(show = FALSE), 
+        lon = reactable::colDef(show = FALSE), 
+        brand = reactable::colDef(name = "Brand"), 
+        inventory = reactable::colDef(name = "Inventory"), 
+        date = reactable::colDef(name = "Date", filterable = FALSE), 
+        time = reactable::colDef(name = "Time", filterable = FALSE)
       )
     )
   })
   
   output$map_in <- googleway::renderGoogle_map({
     googleway::google_map(
-      key = key,
+      key = g_key,
       search_box = TRUE,
       event_return_type = "list", 
       location = c(41.763710, -72.685097), 
@@ -118,7 +115,7 @@ server <- function(input, output, session) {
   
   output$map_out <- googleway::renderGoogle_map({
     googleway::google_map(
-      key = key,
+      key = g_key,
       search_box = TRUE,
       event_return_type = "list", 
       location = c(41.763710, -72.685097), 
@@ -160,8 +157,8 @@ server <- function(input, output, session) {
       nchar(trimws(input$select_inventory_in)) == 0, 
       nchar(trimws(input$select_date_in)) == 0, 
       nchar(trimws(input$select_time_in)) == 0, 
-      length(input$map_in_place_search) == 0, 
-      !grepl(input$map_in_place_search$address, "CT")
+      length(input$map_in_place_search) == 0,
+      !grepl(pattern = "CT", x = input$map_in_place_search$address)
     )
     
     if (any(check)) {
@@ -233,8 +230,8 @@ server <- function(input, output, session) {
     check <- any(
       nchar(trimws(input$select_date_out)) == 0, 
       nchar(trimws(input$select_time_out)) == 0, 
-      length(input$map_in_place_search) == 0, 
-      !grepl(input$map_in_place_search$address, "CT")
+      length(input$map_out_place_search) == 0, 
+      !grepl(pattern = "CT", x = input$map_out_place_search$address)
     )
     
     if (any(check)) {
@@ -255,7 +252,13 @@ server <- function(input, output, session) {
         
         shiny::tagList(
           shiny::p(
-            "By clicking \"Submit\", you verify that the following information about the COVID-19 at-home tests you found to be out of stock is correct to the best of your knowledge:"
+            paste0(
+              "By clicking \"Submit\", you verify that the following information", 
+              " about the COVID-19 at-home tests you found to be out of stock is", 
+              " correct to the best of your knowledge (and that you have checked", 
+              " the table on the \"Home\" page to ensure there is not a more", 
+              " recent update than yours):"
+            )
           ), 
           shiny::br(), 
           shiny::p(
@@ -297,7 +300,7 @@ server <- function(input, output, session) {
   
   shiny::observeEvent(input$submit_in_final_btn, {
     
-    data <- tibble::tibble(
+    df <- tibble::tibble(
       place_id = input$map_in_place_search$place_id, 
       name = input$map_in_place_search$name, 
       address = input$map_in_place_search$address, 
@@ -306,9 +309,44 @@ server <- function(input, output, session) {
       brand = input$select_brand_in, 
       inventory = input$select_inventory_in, 
       date = input$select_date_in, 
-      time = input$select_time_in, 
-      timestamp = Sys.time() |> as.character()
+      time = input$select_time_in
     )
+    
+    add_record(
+      data = df, 
+      creds = config
+    )
+    
+    shiny::removeModal()
+    
+    shiny::modalDialog(
+      title = "Thank You for Your Submission!", 
+      "To see your changes reflected on the \"Home\" page, you will need to refresh your browser"
+    ) |> 
+      shiny::showModal()
+    
+  })
+  
+  shiny::observeEvent(input$submit_out_final_btn, {
+    
+    df <- tibble::tibble(
+      place_id = input$map_out_place_search$place_id, 
+      date = input$select_date_out, 
+      time = input$select_time_out
+    )
+    
+    remove_record(
+      data = df,
+      creds = config
+    )
+    
+    shiny::removeModal()
+    
+    shiny::modalDialog(
+      title = "Thank You for Your Submission!", 
+      "To see your changes reflected on the \"Home\" page, you will need to refresh your browser"
+    ) |> 
+      shiny::showModal()
     
   })
   
