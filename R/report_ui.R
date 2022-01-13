@@ -1,6 +1,7 @@
 
 
 
+# Build the UI elements for the "Report Tests In Stock" page
 in_ui <- shiny::tagList(
   
   shiny::wellPanel(
@@ -84,11 +85,11 @@ in_ui <- shiny::tagList(
           )
         ), 
         
-        googleway::google_mapOutput(outputId = "map_in"), 
+        shiny::textOutput(outputId = "selected_address_in"), 
         
         shiny::br(), 
         
-        shiny::textOutput(outputId = "selected_address_in")
+        googleway::google_mapOutput(outputId = "map_in")
         
       )
       
@@ -115,6 +116,7 @@ in_ui <- shiny::tagList(
 )
 
 
+# Build the UI elements for the "Report Tests Out of Stock" page
 out_ui <- shiny::tagList(
   
   shiny::wellPanel(
@@ -169,11 +171,11 @@ out_ui <- shiny::tagList(
           )
         ), 
         
-        googleway::google_mapOutput(outputId = "map_out"), 
+        shiny::textOutput(outputId = "selected_address_out"), 
         
         shiny::br(), 
         
-        shiny::textOutput(outputId = "selected_address_out")
+        googleway::google_mapOutput(outputId = "map_out")
         
       )
       
