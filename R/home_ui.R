@@ -1,6 +1,6 @@
 
 
-
+# Build the UI elements for the "Home" page
 home_ui <- shiny::tagList(
   
   shiny::fluidRow(
@@ -38,8 +38,17 @@ home_ui <- shiny::tagList(
   shiny::fluidRow(
     
     shiny::column(
-      width = 12,
-      reactable::reactableOutput(outputId = "table")
+      width = 12, 
+      
+      shiny::h6("The Most Recent COVID-19 At-Home Tests Sightings Are Listed Below:"), 
+      
+      shiny::br(), 
+      
+      shiny::column(
+        width = 12,
+        reactable::reactableOutput(outputId = "table")
+      )
+      
     )
     
   )

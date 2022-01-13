@@ -1,6 +1,6 @@
 
 
-
+# Build the UI elements for the "About" page
 about_ui <- shiny::tagList(
   
   shiny::fluidRow(
