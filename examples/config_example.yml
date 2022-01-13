@@ -1,0 +1,8 @@
+default:
+  host: "cluster0.123abc.mongodb.net"
+  username: "username123"
+  password: "password456"
+production:
+  host: "cluster0.123abc.mongodb.net"
+  username: "username123"
+  password: "password456"

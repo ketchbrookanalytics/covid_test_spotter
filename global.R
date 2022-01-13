@@ -12,8 +12,8 @@ library(stringr)   # string manipulation
 
 # Setup environmental variables
 Sys.setenv(
-  R_CONFIG_ACTIVE = "default",   # need this for MongoDB
   GOOGLE_KEY = readLines("google.txt", warn = FALSE),   # Google API key
+  R_CONFIG_ACTIVE = "default",   # need this for MongoDB
   MONGO_DB = "ct_covid_tests",   # Mongo database name
   MONGO_COLLECTION = "test_data"   # Mongo collection name
 )
