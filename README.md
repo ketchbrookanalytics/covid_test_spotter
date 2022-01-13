@@ -1,14 +1,14 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# CT COVID-19 At-Home Test Spotter
+# COVID-19 At-Home Test Spotter
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of the **CT COVID-19 At-Home Test Spotter** app is to allow
-users to locate and report the availability of at-home COVID testing
-kits at retail locations in their state.
+The goal of the **COVID-19 At-Home Test Spotter** app is to allow users
+to locate and report the availability of at-home COVID testing kits at
+retail locations in their state.
 
 It works very similar to the [Waze](https://www.waze.com/) app, in that
 the “reports” data is entirely user-driven.
@@ -23,6 +23,9 @@ the page, they are taken to a form prompting them to submit information
 about when and where they saw test kits *in* or *out of* stock:
 
 ![](www/report_in_page.PNG)
+
+You can see the app live (configured to be limited to Connecticut, USA)
+here: <https://ketchbrookanalytics.shinyapps.io/covid_test_spotter/>
 
 ## Installation
 
