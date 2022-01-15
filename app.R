@@ -359,9 +359,7 @@ server <- function(input, output, session) {
             paste0(
               "By clicking \"Submit\", you verify that the following information", 
               " about the COVID-19 at-home tests you found to be out of stock is", 
-              " correct to the best of your knowledge (and that you have checked", 
-              " the table on the \"Home\" page to ensure there is not a more", 
-              " recent update than yours):"
+              " correct to the best of your knowledge:"
             )
           ), 
           shiny::br(), 
@@ -450,7 +448,7 @@ server <- function(input, output, session) {
   # If the final "Submit" button is clicked on the "Reports Out of Stock" page...
   shiny::observeEvent(input$submit_out_final_btn, {
     
-    # ... build a data frame containing the user's inputs & selectd map data
+    # ... build a data frame containing the user's inputs & selected map data
     df <- tibble::tibble(
       place_id = input$map_out_place_search$place_id, 
       date = input$select_date_out, 
