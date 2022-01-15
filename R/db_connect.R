@@ -115,14 +115,39 @@ remove_record <- function(data, creds) {
       query = query_str
     )
     
+    # Format the "date" and "time" in the database data appropriately for 
+    # removal decision logic downstream in next step
+    db_data$date <- as.Date(db_data$date)
+    db_data$time <- factor(
+      db_data$time, 
+      levels = c("Morning", "Afternoon", "Evening"), 
+      ordered = TRUE
+    )
+    
     # Ensure the date/time submitted for removal is more recent than what's in 
     # the database
-    if (all(c(data$date[1] >= db_data$date[1], data$time[1] >= db_data$time[1]))) {
+    
+    # If the date is more recent than what's in the database, immediately remove
+    # the relevant "place_id" record
+    if (data$date[1] > db_data$date[1]) {
       
       # Remove the item the collection matching the "place_id"
       mongo_connection$remove(
         query = query_str
       )
+      
+    } else {
+      
+      # If the date is equivalent to what's in the database for that "place_id", 
+      # remove the record if the time of day is more recent
+      if (all(c(data$date[1] == db_data$date[1], data$time[1] > db_data$time[1]))) {
+        
+        # Remove the item the collection matching the "place_id"
+        mongo_connection$remove(
+          query = query_str
+        )
+        
+      }
       
     }
     
