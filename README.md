@@ -88,7 +88,7 @@ database offering. MongoDB provides *shared* clusters at no cost, which
 are useful for Proof-of-Concept projects that don’t require high
 availability.
 
--   To set up a MongoDB Atlas database, using this [Getting Started
+-   To set up a MongoDB Atlas database, use this [Getting Started
     Guide](https://docs.atlas.mongodb.com/getting-started/) (*Note that
     you will need to ensure that the IP address of where your app lives
     is whitelisted by your MongoDB database cluster*)
@@ -103,7 +103,7 @@ availability.
 
 -   (Optional) You may also want to change (or remove) the query results
     limit for the number of items to retrieve from the collection; this
-    is set at [db\_connect.R](db_connect.R#L31)
+    is set at [db\_connect.R](R/db_connect.R#L31)
 
 ### Global Environment
 
