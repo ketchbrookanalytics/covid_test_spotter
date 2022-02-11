@@ -50,8 +50,8 @@ here: <https://ketchbrookanalytics.shinyapps.io/covid_test_spotter/>
 
 In addition to the code repository, this project requires that you have
 certain Google APIs enabled, a MongoDB database setup, and that you have
-appropriately edited the [global.R](#global-environment) configuration
-file.
+appropriately established related [environment
+variables](#global-environment).
 
 ### Google APIs
 
@@ -107,18 +107,25 @@ availability.
 
 ### Global Environment
 
-In the [global.R](global.R) script, you need to set the following
-environmental variables:
+There are many ways to set environment variables in R, but we recommend
+creating a file at the root of this project called `.Renviron` to
+accomplish this. In this file, you must establish the following
+environment variables:
 
 1.  **GOOGLE\_KEY**, for storing your Google API Key, as discussed
-    [here](#google-apis); we accomplished this by placing a plain-text
-    file called `google.txt` containing the key string at the root of
-    our directory (and added this file to [.gitignore](.gitignore))
+    [here](#google-apis)
 2.  **R\_CONFIG\_ACTIVE**, which should always be set to `"default"`
 3.  **MONGO\_DB**, the name of the MongoDB Atlas database, as discussed
     [here](#mongodb-atlas-database)
 4.  **MONGO\_COLLECTION**, the name of the MongoDB Atlas database
     collection, as discussed [here](#mongodb-atlas-database)
+
+For example, the contents of the file should look like:
+
+    GOOGLE_KEY=AbCdEfG12345
+    R_CONFIG_ACTIVE=default
+    MONGO_DB=my-mongo-db-name
+    MONGO_COLLECTION=my-mongo-collection-name
 
 ## CRUD Workflow
 
