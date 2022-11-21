@@ -24,9 +24,6 @@ about when and where they saw test kits *in* or *out of* stock:
 
 ![](www/report_in_page.PNG)
 
-You can see the app live (configured to be limited to Connecticut, USA)
-here: <https://ketchbrookanalytics.shinyapps.io/covid_test_spotter/>
-
 ## Installation
 
 1.  Clone this repository to your local machine
